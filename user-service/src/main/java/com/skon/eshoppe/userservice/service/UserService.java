@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,31 +70,14 @@ public class UserService {
         return user;
     }
 
-
-    /*private String getEncodedPassword(String password) {
-        String encryptedpassword = null;
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.update(password.getBytes());
-
-            byte[] bytes = m.digest();
-            StringBuilder s = new StringBuilder();
-            for(int i=0; i< bytes.length ;i++)
-            {
-                s.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            encryptedpassword = s.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
-        return encryptedpassword;
-    }*/
-
-
     public ResponseEntity<User> findByUserId(Long userId) {
 
-        return new ResponseEntity<>(userRepository.findByUserId(userId), HttpStatus.OK);
+        if(userRepository.existsById(userId)){
+            return new ResponseEntity<>(userRepository.findByUserId(userId), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     public ResponseEntity<User> updateUser(Long userId, User user) {
